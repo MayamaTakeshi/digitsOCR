@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 
-
 def initKnn():
     knn = cv2.ml.KNearest_create()
     img = cv2.imread('digits.png')
@@ -32,7 +31,8 @@ def findRoi(frame, thresValue):
     absY = cv2.convertScaleAbs(y)
     dst = cv2.addWeighted(absX,0.5,absY,0.5,0)
     ret, ddst = cv2.threshold(dst,thresValue,255,cv2.THRESH_BINARY)
-    im, contours, hierarchy = cv2.findContours(ddst,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    #im, contours, hierarchy = cv2.findContours(ddst,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(ddst,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     for c in contours:
         x, y, w, h = cv2.boundingRect(c)
         if w > 10 and h > 20:
@@ -65,6 +65,7 @@ count = 0
 while True:
     ret, frame = cap.read()
     frame = frame[:,:width]
+    frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
     rois, edges = findRoi(frame, 50)
     digits = []
     for r in rois:
